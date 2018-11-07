@@ -99,9 +99,9 @@ class Colour
     @weight = weight
 
     hex_split = hex.match(/#(..)(..)(..)/)
-    @red      = @hex[1]
-    @green    = @hex[2]
-    @blue     = @hex[3]
+    @red      = hex_split[1]
+    @green    = hex_split[2]
+    @blue     = hex_split[3]
   end
 
   def ncurses
