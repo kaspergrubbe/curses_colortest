@@ -1,5 +1,22 @@
 class NcursesColorManager
   def initialize
+    if Curses.has_colors? && Curses.can_change_color?
+      Curses.start_color
+      Curses.use_default_colors
+    elsif ENV['COLORTERM'] == nil
+      raise "Terminal does not support true colors"
+    else
+      case [Curses.has_colors?, Curses.can_change_color?]
+      when [true, false]
+        raise "Has colors, can't change them"
+      when [false, true]
+        raise "No colors, can change them"
+      when [false, false]
+        raise "No colors, can't change them"
+      else
+        raise "wat!"
+      end
+    end
   end
 
   def color_pair(fg_hex, bg_hex)
@@ -41,24 +58,6 @@ require 'curses'
 
 begin
   Curses.init_screen
-
-  if Curses.has_colors? && Curses.can_change_color?
-    Curses.start_color
-    Curses.use_default_colors
-  elsif ENV['COLORTERM'] == nil
-    raise "Terminal does not support true colors"
-  else
-    case [Curses.has_colors?, Curses.can_change_color?]
-    when [true, false]
-      raise "Has colors, can't change them"
-    when [false, true]
-      raise "No colors, can change them"
-    when [false, false]
-      raise "No colors, can't change them"
-    else
-      raise "wat!"
-    end
-  end
 
   ncm = NcursesColorManager.new
   plb = ncm.color_pair('#FFFFFF', '#4B8BBE') # python light blue
