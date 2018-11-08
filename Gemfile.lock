@@ -1,0 +1,30 @@
+GIT
+  remote: https://github.com/ruby/curses
+  revision: cfd83b9aa0ac609a44bddad3b8d3878010fce7ae
+  ref: cfd83b9aa0ac609a44bddad3b8d3878010fce7ae
+  specs:
+    curses (1.2.5)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    coderay (1.1.2)
+    method_source (0.9.1)
+    pry (0.12.0)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
+    pry-remote (0.1.8)
+      pry (~> 0.9)
+      slop (~> 3.0)
+    slop (3.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  curses!
+  pry
+  pry-remote
+
+BUNDLED WITH
+   1.16.3
