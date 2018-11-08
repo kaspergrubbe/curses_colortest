@@ -1,12 +1,12 @@
-#!/usr/bin/env ruby
-require 'bundler/inline'
+# #!/usr/bin/env ruby
+# require 'bundler/inline'
 
-gemfile do
-  source 'https://rubygems.org'
-  gem 'curses'
-  gem 'pry'
-  gem 'pry-remote'
-end
+# gemfile do
+#   source 'https://rubygems.org'
+#   gem 'curses', github: 'ruby/curses'
+#   gem 'pry'
+#   gem 'pry-remote'
+# end
 
 require 'curses'
 require 'json'
@@ -126,6 +126,7 @@ begin
 
   if Curses.has_colors? && Curses.can_change_color?
     Curses.start_color
+    #Curses.use_default_colors
   else
     raise
   end
@@ -144,7 +145,7 @@ begin
   end
 
   @colour_map.colour_pairs.each do |index, pair|
-    log!("Setting pair ##{pair.number} to #{pair.foreground.hex} (#{pair.background.hex})")
+    log!("Setting pair ##{pair.number} to #{pair.foreground.number} (#{pair.background.number})")
     init_pair = Curses.init_pair(pair.number, pair.foreground.number, pair.background.number)
 
     if init_pair == false
@@ -158,39 +159,64 @@ begin
   Curses.noecho # don't echo keys entered
   Curses.curs_set(0) # invisible cursor
 
-  #win = Curses::Window.new(height, width, 0, 0)
   win = Curses.stdscr
 
-  fg = @colour_map['grey']['50']
-  bg = @colour_map['lightblue']['900']
-  pair = @colour_map.pair(fg, bg)
+  max = 16383
 
-  paint_effect(win, Curses.color_pair(pair.number) | Curses::A_UNDERLINE) do
-    win.setpos(1,1)
-    win.addstr('lol')
+  i = 1
+  while(true)
+    paint_effect(win, Curses.color_pair(i)) do
+      win.setpos(1,1)
+      win.addstr("lol 28573 #{i}")
+    end
+
+    paint_effect(win, Curses.color_pair(1337) | Curses::A_UNDERLINE) do
+      win.setpos(2,2)
+      win.addstr('lol')
+    end
+
+    paint_effect(win, Curses.color_pair(10437) | Curses::A_UNDERLINE) do
+      win.setpos(3,3)
+      win.addstr('lol')
+    end
+
+    paint_effect(win, Curses.color_pair(0)) do
+      win.setpos(4,4)
+      win.addstr('lol')
+    end
+
+    paint_effect(win, Curses.color_pair(@colour_map.pair(@colour_map['grey']['50'], @colour_map['blue']['900']).number)) do
+      win.setpos(5,5)
+      win.addstr('lol')
+    end
+
+    fg = @colour_map['grey']['50']
+    bg = @colour_map['lightblue']['900']
+    pair = @colour_map.pair(fg, bg)
+    paint_effect(win, Curses.color_pair(pair.number)) do
+      win.setpos(6,6)
+      win.addstr('lol')
+    end
+
+    win.refresh
+
+    case win.getch
+    when 'q'
+      exit(0)
+    when 'n'
+      i += 100
+    when 'm'
+      i += 1000
+    when 'h'
+      i -= 100
+    when 'j'
+      i -= 1000
+    when 'b'
+      i -= 1
+    else
+     i += 1
+    end
   end
-
-  paint_effect(win, Curses.color_pair(1337) | Curses::A_UNDERLINE) do
-    win.setpos(2,2)
-    win.addstr('lol')
-  end
-
-  paint_effect(win, Curses.color_pair(10337) | Curses::A_UNDERLINE) do
-    win.setpos(3,3)
-    win.addstr('lol')
-  end
-
-  paint_effect(win, Curses.color_pair(0)) do
-    win.setpos(4,4)
-    win.addstr('lol')
-  end
-
-  paint_effect(win, Curses.color_pair(@colour_map.pair(@colour_map['grey']['50'], @colour_map['blue']['900']).number)) do
-    win.setpos(5,5)
-    win.addstr('lol')
-  end
-
-  win.refresh
 
   File.open('log.log', 'w') do |log|
     $log.each do |line|
@@ -198,7 +224,6 @@ begin
     end
   end
 
-  win.getch
   win.close
 ensure
   Curses.use_default_colors
