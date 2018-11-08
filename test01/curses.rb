@@ -38,13 +38,15 @@ begin
   offset = 17
   [white, black, plb, pdb, ply, pdy].each.with_index(offset) do |c, i|
     init_color = Curses.init_color(i, *c)
+    raise unless init_color
     colors << i
   end
 
   pairs_i = 10
   colors[0..1].each do |fg|
     colors[2..colors.size].each do |bg|
-      Curses.init_pair(pairs_i, fg, bg)
+      init_pair = Curses.init_pair(pairs_i, fg, bg)
+      raise unless init_pair
       pairs << pairs_i
       pairs_i += 1
     end
