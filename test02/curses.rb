@@ -10,7 +10,8 @@ class NcursesColorManager
     @color_pairs[[fg_hex, bg_hex]] ||= begin
       @@max_color_pair_id ||= 0
       id = (@@max_color_pair_id += 1)
-      Curses.init_pair(id, fg_color_id, bg_color_id)
+      pair = Curses.init_pair(id, fg_color_id, bg_color_id)
+      raise unless pair
       Curses.color_pair(id)
     end
   end
@@ -24,7 +25,8 @@ class NcursesColorManager
       @@max_color_id ||= 17 # offset
 
       id = (@@max_color_id += 1)
-      Curses.init_color(id, *hex_to_1000(hex))
+      color = Curses.init_color(id, *hex_to_1000(hex))
+      raise unless color
       id
     end
   end
